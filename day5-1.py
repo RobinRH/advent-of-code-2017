@@ -2,12 +2,9 @@
 import csv
 import sys
 
-filename = sys.argv[1]
-
-instructions = []
-with open(filename, 'r') as f:
-    for line in f:
-        instructions.append(int(line))
+with open(sys.argv[1], 'r') as f:
+    content = f.read()
+instructions = map(lambda x: int(x), content.split('\n'))
 
 total = len(instructions)
 
@@ -18,6 +15,5 @@ while nexti < total:
     nexti = nexti + instructions[nexti]
     instructions[save] += 1
     steps += 1
-    #print instructions
 
 print steps
