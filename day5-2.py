@@ -2,20 +2,13 @@
 import csv
 import sys
 
-print sys.argv[1]
 filename = sys.argv[1]
-
-total = 0
 instructions = []
 with open(filename, 'r') as f:
-    reader = csv.reader(f, delimiter=' ')
-    for row in reader:
-        total += 1
-        instructions.append(int(row[0]))
+    for line in f:
+        instructions.append(int(line))
 
-#print instructions
-#print total
-
+total = len(instructions)
 
 nexti = 0
 steps = 0
