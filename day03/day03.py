@@ -1,7 +1,9 @@
+# input -> 361527
 # answer -> 326
 # answer -> 363010
 
 import math
+import itertools
 
 # ulam spiral
 # 17  16  15  14  13
@@ -10,101 +12,69 @@ import math
 # 20   7   8   9  10
 # 21  22  23  24  25
 
-# part 1
-
-left, right, up, down = 1, 2, 3, 4
 input = 361527
 
-# create grid
+left, right, up, down = 1, 2, 3, 4
+# xmove, ymove, xleft, yleft, newdirection
+moves = {
+    right: (1, 0, 0, -1, up),
+    left: (-1, 0, 0, 1, down),
+    up: (0, -1, -1, 0, left),
+    down: (0, 1, 1, 0, right)
+}
+
 size = int(math.sqrt(input)) * 3
-grid = [ [ 0 for x in range(size)] for y in range(size)]
 start = size // 2
+
+# part 1
+
+# create grid
+grid = [ [ 0 for x in range(size)] for y in range(size)]
 direction = right
-current = (start, start)
+x = start
+y = start
 grid[start][start] = 1
 n = 1
 while n < input:
     n += 1
 
     # move straight
-    if direction == right:
-        current = (current[0] + 1, current[1])
-    elif direction == left:
-        current = (current[0] - 1, current[1])
-    elif direction == up:
-        current = (current[0], current[1]-1)
-    else:
-        current = (current[0], current[1] + 1)
+    xmove, ymove, xleft, yleft, newdirection = moves[direction]
+    x, y = x + xmove, y + ymove
+    
+    grid[x][y] = n
 
-    grid[current[0]][current[1]] = n
+    # move left if empty
+    if grid[x + xleft][y + yleft] == 0:
+        direction = newdirection
 
-    # turn if square to the left is empty
-    if direction == right:
-        if grid[current[0]][current[1]-1] == 0:
-            direction = up
-    elif direction == left:
-        if grid[current[0]][current[1]+1] == 0:
-            direction = down
-    elif direction == up:
-        if grid[current[0]-1][current[1]] == 0:
-            direction = left
-    else: # down
-        if grid[current[0]+1][current[1]] == 0:
-            direction = right
-
-distance = abs(start - current[0]) + abs(start - current[1])
+distance = abs(start - x) + abs(start - y)
 print('part 1: ', distance)
 
-
 # part 2
-left, right, up, down = 1, 2, 3, 4
-input = 361527
 
 # create grid
-size = int(math.sqrt(input)) * 3
 grid = [ [ 0 for x in range(size)] for y in range(size)]
-start = size // 2
 direction = right
-current = (start, start)
+x = start
+y = start
 grid[start][start] = 1
-n = 1
 local = 0
+neighbors = [[i, j] for i in [-1, 0, 1] for j in [-1, 0, 1]]
+
 while local < input:
-    n += 1
-
     # move straight
-    if direction == right:
-        current = (current[0] + 1, current[1])
-    elif direction == left:
-        current = (current[0] - 1, current[1])
-    elif direction == up:
-        current = (current[0], current[1]-1)
-    else:
-        current = (current[0], current[1] + 1)
+    xmove, ymove, xleft, yleft, newdirection = moves[direction]
+    x, y = x + xmove, y + ymove
 
-    # get sum of surrounding squares
     local = 0
-    for i in [-1, 0, 1]:
-        for j in [-1, 0, 1]:
-            xlocal = current[0] + i
-            ylocal = current[1] + j
-            local += grid[xlocal][ylocal]
-    grid[current[0]][current[1]] = local
+    for i, j in neighbors:
+        xlocal, ylocal = x + i, y + j
+        local += grid[xlocal][ylocal]
+    grid[x][y] = local
 
-    # turn if square to the left is empty
-    if direction == right:
-        if grid[current[0]][current[1]-1] == 0:
-            direction = up
-    elif direction == left:
-        if grid[current[0]][current[1]+1] == 0:
-            direction = down
-    elif direction == up:
-        if grid[current[0]-1][current[1]] == 0:
-            direction = left
-    else: # down
-        if grid[current[0]+1][current[1]] == 0:
-            direction = right
+    # move left if empty
+    if grid[x + xleft][y + yleft] == 0:
+        direction = newdirection
 
-
-distance = abs(start - current[0]) + abs(start - current[1])
 print('part 2: ', local)
