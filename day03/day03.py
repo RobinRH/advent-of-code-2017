@@ -68,11 +68,9 @@ direction = right
 current = (start, start)
 grid[start][start] = 1
 n = 1
-previous = 1
 local = 0
 while local < input:
     n += 1
-    previous = local
 
     # move straight
     if direction == right:
