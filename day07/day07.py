@@ -1,9 +1,6 @@
 # answer -> hmvwl
 # answer -> 1853
 
-from pprint import pprint
-from collections import Counter
-
 # make a list of all the nodes
 nodes = []
 
