@@ -57,14 +57,12 @@ def findBadNode(node):
         return node
     else:
         # find the offending node
-        wt, ch = nodes[node]
-        wtdict = {getWeight(x): x for x in ch}
+        _, ch = nodes[node]
         wts = [getWeight(x) for x in ch]
-        badnode = ''
-        for key in list(wtdict.keys()):
-            if wts.count(key) == 1:
-                badnode = wtdict[key]
-        return findBadNode(badnode)
+        for onech in ch:
+            chwt = getWeight(onech)
+            if wts.count(chwt) == 1:
+                return findBadNode(onech)
 
 
 # get the offset
