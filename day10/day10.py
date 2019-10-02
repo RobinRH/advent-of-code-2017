@@ -1,30 +1,14 @@
 #answer 29240
 
-import csv
 import sys
+import io
 
-def getSegment(numbers, position, length):
-    segment = []
-    longList = list(numbers)
-    longList.extend(numbers)
-    for i in range(length):
-        segment.append(longList[position + i])
 
-    return segment
-
-filename = sys.argv[1]
-
-with open(filename, 'r') as f:
-    reader = csv.reader(f, delimiter=',')
-    for row in reader:
-        #print row
-        lengths = map((lambda x : int(x)), row)
-        #print lengths
-
+inputString = open('input10.txt', 'r').read().strip()
+lengths = [int(x) for x in inputString.split(',')]
 position = 0
 skip = 0
-numbers = range(256)
-print numbers
+numbers = list(range(256))
 
 '''
 For each length:
@@ -35,7 +19,7 @@ Increase the skip size by one.
 
 for length in lengths:
     # get the list to reverse
-    segment = getSegment(numbers, position, length)
+    segment = (numbers*2)[position:position+length]
 
     # reverse the list
     segment.reverse()
@@ -49,7 +33,7 @@ for length in lengths:
             npos = 0
 
     # move the position forward, length + skip
-    for i in range(length + skip):
+    for i in list(range(length + skip)):
         position += 1
         if position == len(numbers):
             position = 0
@@ -57,9 +41,6 @@ for length in lengths:
     # increment the skip
     skip += 1
 
-    print numbers, length, position, skip
-
 # multiply the first two numbers
 result = numbers[0] * numbers[1]    
-print result
-
+print ('part 1: ', result)
