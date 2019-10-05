@@ -1,47 +1,12 @@
-# answer 747
+# answer -> 747
+# answer -> 1544
 
-import csv
-import sys
+import io 
+import collections
 
-filename = sys.argv[1]
-moves = []
+moves = open('input11.txt', 'r').readline().split(',')
 
-with open(filename, 'r') as f:
-    reader = csv.reader(f, delimiter=',')
-    for row in reader:
-        #print row
-        moves = row
-
-# count up each occurence
-# n, w, ne, nw, se, sw
-nCount = moves.count('n')
-sCount =  moves.count('s')
-neCount =  moves.count('ne')
-nwCount =  moves.count('nw')
-seCount =  moves.count('se')
-swCount =   moves.count('sw')
-
-print nCount, sCount, neCount, nwCount, seCount, swCount, len(moves)
-
-def firstTry(nCount, sCount, neCount, nwCount, seCount, swCount):
-    # north cancels south
-    n_sDiff = abs(nCount - sCount)
-
-    # ne cancels sw
-    ne_swDiff = abs(neCount - swCount)
-
-    # nw cancels se
-    nw_seDiff = abs(nwCount - seCount)
-
-    # what's left is the number of steps
-    steps = n_sDiff + ne_swDiff + nw_seDiff
-
-    return steps
-
-def secondTry(nCount, sCount, neCount, nwCount, seCount, swCount):
-
-    steps = 0
-
+def getDistance(nCount, sCount, neCount, nwCount, seCount, swCount):
     if nCount > sCount:
         nCount -= sCount
         sCount = 0
@@ -69,21 +34,21 @@ def secondTry(nCount, sCount, neCount, nwCount, seCount, swCount):
         neCount -= diff
         sCount -= diff
         seCount += diff
-    
+
     # se + n -> ne
     if min(seCount, nCount) > 0:
         diff = min(seCount, nCount)
         seCount -= diff
         nCount -= diff
         neCount += diff
-    
+
     # nw + s -> sw
     if min(nwCount, sCount) > 0:
         diff = min(nwCount, sCount)
         nwCount -= diff
         sCount -= diff
         swCount += diff
-    
+
     # sw + n -> nw
     if min(swCount, nCount) > 0:
         diff = min(swCount, nCount)
@@ -106,7 +71,15 @@ def secondTry(nCount, sCount, neCount, nwCount, seCount, swCount):
         nCount += diff
 
     steps = nCount + sCount + nwCount + swCount + neCount + seCount
-    return steps
+    return(steps)
 
-steps = secondTry(nCount,sCount,neCount,nwCount, seCount, swCount)
-print steps
+counts = collections.Counter(moves)
+print('part 1: ', getDistance(counts['n'], counts['s'], counts['ne'], counts['nw'], counts['se'], counts['sw']))
+
+maxsteps = 0
+for i in range(len(moves)):
+    counts = collections.Counter(moves[:i])
+    distance = getDistance(counts['n'], counts['s'], counts['ne'], counts['nw'], counts['se'], counts['sw'])
+    maxsteps = max(maxsteps, distance)
+
+print('part 2: ', maxsteps)
